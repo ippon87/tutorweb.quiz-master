@@ -1,11 +1,10 @@
-
 //Use: var x = lastEight(answers)
 //Before: answers is an array with the answer pattern, 0 for wrong 1 for right
 //After: x is a 2 item array, the first item is the current score
 //the second is what the score will be if you answer correctly
 function lastEight(answers) 
 {
-	var nomans = answers.slice();    //make a copy so the original is not touched
+    var nomans = answers.slice();    //make a copy so the original is not touched
 	if(nomans.length < 8)	//increase the size of the array if needed
 	{
 		while(nomans.length < 8) 
@@ -109,7 +108,7 @@ function bestEight(answers, d)
     //print(cumsum); 
     //print(sum);
 	returner = (Math.round((sum*10)*4)/4).toFixed(2);
-	grade[0] = returner;
+	grade[0] = parseFloat(returner);
     //print(answers);
     nomans = answers.slice();
    nomans.splice(0,0,1); // Next answer: ToDo can this be optimized?
@@ -146,6 +145,69 @@ function bestEight(answers, d)
     //print(cumsum); 
     //print(sum);
 	returner = (Math.round((sum*10)*4)/4).toFixed(2);
-	grade[1] = returner;
+	grade[1] = parseFloat(returner);
 	return grade;  
+}
+
+//Use: var vector = averageWeights(answers);
+//Before: answers is an array with items consisting of 1's of 0's
+//After: vetor is a 2 item array giving a grade from 1-10 by using the formula:
+// (sum of n first items) / n * 10, where n = total number of items / 2.
+function averageWeights(answers)
+{
+        var nomans = answers.slice();	//make a copy so as to not change the original
+        var t = nomans.length;		//likely redundant
+        var sum = 0;		
+        var n = Math.round(nomans.length/2); //divider for average
+        var grade = new Array();
+        if(nomans.length < 8){		//push 0 until 8
+            while(nomans.length < 8){
+                nomans.push(0);
+            }
+        }         
+        if(nomans.length <= 16){	// works just like lastEight();
+            for(i = 0; i<8; i++)
+                sum += nomans[i];    
+            sum = (Math.round((sum/8*10)*4)/4).toFixed(2);
+            grade[0] = parseFloat(sum);
+        }
+        else if(nomans.length <= 60){	// takes more answers into your grade the more you try
+            for (i=0; i<n; i++)
+                sum += nomans[i];
+            sum = (Math.round((sum/n*10)*4)/4).toFixed(2);  
+            grade[0] = parseFloat(sum);
+        } 
+        else{
+            for(i=0; i<30; i++)		// peaks at 60+ answers taking the first 30 answers into the grade
+                sum += nomans[i];
+            sum = (Math.round((sum/30*10)*4)/4).toFixed(2);
+            grade[0] = parseFloat(sum);
+        }
+        nomans.splice(0,0,1);		//ToDo: just like the others, this might be better, however not in its current state
+        sum = 0;
+        n= Math.round(nomans.length /2);
+        if(nomans.length < 8){
+            while(nomans.length < 8){
+                nomans.push(0);
+            }
+        }         
+        if(nomans.length <= 16){
+            for(i = 0; i<8; i++)
+                sum += nomans[i];    
+            sum = (Math.round((sum/8*10)*4)/4).toFixed(2);
+            grade[1] = parseFloat(sum);
+        }
+        else if(nomans.length <= 60){
+            for (i=0; i<n; i++)
+                sum += nomans[i];
+            sum = (Math.round((sum/n*10)*4)/4).toFixed(2);  
+            grade[1] = parseFloat(sum);
+        } 
+        else{
+            for(i=0; i<30; i++)
+                sum += nomans[i];
+            sum = (Math.round((sum/30*10)*4)/4).toFixed(2);
+            grade[1] = parseFloat(sum);
+        }
+    return grade;
 }
